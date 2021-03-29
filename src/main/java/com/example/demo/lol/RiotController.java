@@ -29,14 +29,14 @@ public class RiotController {
         for (MatchBean match : matches.getMatches()) {
             MatchDetailBean detail = getMatchDetail(server, match.getGameId());
             StatsBean[] statsBeans = new StatsBean[10];
-            int userTeam = 100;
+            int userTeam = 1;
             boolean hasUserWon = false;
             for (ParticipantBean participant : detail.getParticipantIdentities()) {
                 if (participant.getPlayer().getAccountId().equals(userId)) {
+                    userTeam = participant.getParticipantId() <= 5 ? 1 : 2;
                     if (participant.getParticipantId() <= 5 && detail.getTeams()[0].getWin()
                         || participant.getParticipantId() > 5 && detail.getTeams()[1].getWin()) {
                         hasUserWon = true;
-                        userTeam = participant.getParticipantId() <= 5 ? 1 : 2;
                     }
 //                    continue;
                 }
