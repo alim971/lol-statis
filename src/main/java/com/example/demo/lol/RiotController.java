@@ -8,7 +8,10 @@ import com.example.demo.riot.MatchStats;
 import com.example.demo.riot.StatsBean;
 import com.example.demo.riot.UserBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +23,16 @@ public class RiotController {
 
     @Value("${API_KEY}")
     private String key;
+
+    @GetMapping("/exists")
+    public ResponseEntity exists(@RequestParam String server, @RequestParam String username) {
+        try {
+            getAcccountId(server, username);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (HttpClientErrorException ex) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping("/stats")
     public MatchStats[] getStatsForMatches(@RequestParam String server, @RequestParam String username) {
