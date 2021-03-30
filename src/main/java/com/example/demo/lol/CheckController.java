@@ -16,7 +16,7 @@ public class CheckController {
 
     @GetMapping("/health")
     public ResponseEntity checkHealth() {
-        final String uriHealth = "https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-852e62c4-eb53-4cd7-81a0-7617261f26a2" + key;
+        final String uriHealth = "https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=" + key;
 
         RestTemplate restTemplate = new RestTemplate();
         try {
