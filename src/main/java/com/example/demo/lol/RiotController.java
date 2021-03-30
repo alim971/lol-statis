@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -78,8 +79,12 @@ public class RiotController {
         final String uriHistory = "https://" + server + ".api.riotgames.com/lol/match/v4/matchlists/by-account/" + id + "?endIndex=" + endIndex + "&beginIndex=" + beginIndex + timeParams + "&queue=" + queue + "&api_key=" + key;
 
         RestTemplate restTemplate = new RestTemplate();
-        MatchesBean result = restTemplate.getForObject(uriHistory, MatchesBean.class);
-        return result;
+        try {
+            MatchesBean result = restTemplate.getForObject(uriHistory, MatchesBean.class);
+            return result;
+        } catch (HttpClientErrorException ex) {
+            return new MatchesBean();
+        }
     }
 
     private MatchDetailBean getMatchDetail(String server, String id) {
@@ -94,6 +99,9 @@ public class RiotController {
     private StatsBean getStatsForPlayer(String server, String userId, long timestamp, String summonerName, int team) {
         MatchesBean matches = getMatchHistory(server, userId, 1, timestamp);
         int games = 0, wins = 0, streak = 0;
+        if(matches.getMatches() == null) {
+            return new StatsBean(summonerName, team, games, streak, false, 0);
+        }
         boolean isWinStreak = true;
         boolean isStreak = true;
         for (MatchBean match : matches.getMatches()) {
