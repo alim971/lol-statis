@@ -1,0 +1,17 @@
+{
+  "matches": [
+    {
+      "platformId": "EUN1",
+      "gameId": 2791115267,
+      "champion": 117,
+      "queue": 420,
+      "season": 13,
+      "timestamp": 1617544552310,
+      "role": "DUO_SUPPORT",
+      "lane": "BOTTOM"
+    }
+  ],
+  "startIndex": 0,
+  "endIndex": 1,
+  "totalGames": 65
+}

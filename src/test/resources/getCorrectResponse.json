@@ -1,0 +1,89 @@
+[
+  {
+    "userName": "lekycae",
+    "userTeam": 2,
+    "hasUserWon": true,
+    "players": [
+      {
+        "summonerName": "Nami Khalifa",
+        "team": 1,
+        "games": 1,
+        "streak": 1,
+        "winStreak": false,
+        "winRate": 0.0
+      },
+      {
+        "summonerName": "31stlifer",
+        "team": 1,
+        "games": 1,
+        "streak": 1,
+        "winStreak": false,
+        "winRate": 0.0
+      },
+      {
+        "summonerName": "Shoxivy",
+        "team": 1,
+        "games": 1,
+        "streak": 1,
+        "winStreak": true,
+        "winRate": 1.0
+      },
+      {
+        "summonerName": "ReadyAtDawn",
+        "team": 1,
+        "games": 1,
+        "streak": 1,
+        "winStreak": false,
+        "winRate": 0.0
+      },
+      {
+        "summonerName": "Pan Hidari ",
+        "team": 1,
+        "games": 1,
+        "streak": 1,
+        "winStreak": true,
+        "winRate": 1.0
+      },
+      {
+        "summonerName": "rins 08",
+        "team": 2,
+        "games": 1,
+        "streak": 1,
+        "winStreak": false,
+        "winRate": 0.0
+      },
+      {
+        "summonerName": "eminka12",
+        "team": 2,
+        "games": 1,
+        "streak": 1,
+        "winStreak": true,
+        "winRate": 1.0
+      },
+      {
+        "summonerName": "Lekycae",
+        "team": 2,
+        "games": 1,
+        "streak": 1,
+        "winStreak": true,
+        "winRate": 1.0
+      },
+      {
+        "summonerName": "shadow 101010",
+        "team": 2,
+        "games": 1,
+        "streak": 1,
+        "winStreak": true,
+        "winRate": 1.0
+      },
+      {
+        "summonerName": "samco19",
+        "team": 2,
+        "games": 1,
+        "streak": 1,
+        "winStreak": false,
+        "winRate": 0.0
+      }
+    ]
+  }
+]

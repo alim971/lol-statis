@@ -1,0 +1,17 @@
+{
+  "matches": [
+    {
+      "platformId": "EUN1",
+      "gameId": 2790080818,
+      "champion": 31,
+      "queue": 420,
+      "season": 13,
+      "timestamp": 1617458069954,
+      "role": "SOLO",
+      "lane": "TOP"
+    }
+  ],
+  "startIndex": 0,
+  "endIndex": 1,
+  "totalGames": 11
+}
