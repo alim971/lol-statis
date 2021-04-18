@@ -61,7 +61,7 @@ public class StatsService implements IStatsService {
         }
         log.info(
             "From last " + games + " game" + (games != 1 ? "s," : ",") + "player '" + summonerName
-            + "' has " + wins + " win" + (wins != 1 ? "s" : "") + "and " + streak
+            + "' has " + wins + " win" + (wins != 1 ? "s" : "") + " and " + streak
                 + (isWinStreak ? " win" : " loose") + " streak"
         );
         return new StatsBean(summonerName, team, games, streak, isWinStreak, games > 0 ? wins / (double) games : 0);

@@ -25,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -53,10 +54,10 @@ class RiotControllerTest {
     }
 
     @Test
-    void whenUserDoesNotExistsReturnsBadRequest() {
+    void whenUserDoesNotExistsReturnsUnprocessableEntity() {
         when(riotService.getAcccountId(anyString(), anyString())).thenThrow(HttpClientErrorException.class);
         ResponseEntity response = sut.exists("foo", "bar");
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
     }
 
     @ParameterizedTest
@@ -109,7 +110,7 @@ class RiotControllerTest {
         players[0] = statsBean;
         when(statsService.getStatsForPlayer(server, idToReturn, 0L, username, team)).thenReturn(statsBean);
 
-        MatchStats[] result = sut.getStatsForMatches(server, username);
+        MatchStats[] result = sut.getStatsForMatches(server, username).getBody();
         assertEquals(1, result.length);
         assertEquals(username, result[0].getUserName());
         assertEquals(hasUserWon, result[0].isHasUserWon());
@@ -117,5 +118,13 @@ class RiotControllerTest {
         assertEquals(1, result[0].getPlayers().length);
         assertEquals(statsBean, result[0].getPlayers()[0]);
 
+    }
+
+    @Test
+    void itShouldReturnUnprocessableEntity() {
+        when(riotService.getAcccountId(anyString(), anyString())).thenThrow(HttpClientErrorException.class);
+        ResponseEntity<MatchStats[]> response = sut.getStatsForMatches("foo", "bar");
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
+        assertNull(response.getBody());
     }
 }

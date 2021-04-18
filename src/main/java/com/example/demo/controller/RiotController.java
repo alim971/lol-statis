@@ -30,23 +30,20 @@ public class RiotController {
 
     @GetMapping("/exists")
     public ResponseEntity exists(@RequestParam String server, @RequestParam String username) {
-        try {
-            log.info("Checking whether account with username '" + username + "' exist on '" + server + "' server");
-            riotService.getAcccountId(server, username);
-            log.info("Account with username '" + username + "' exists on '" + server + "' server");
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (HttpClientErrorException ex) {
-            log.warn("Account with username '" + username + "' does not exist on '" + server + "' server");
-
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        return !getAccountIdIfExists(server, username).equals("") ?
+            new ResponseEntity(HttpStatus.OK)
+            :
+            new ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @GetMapping("/stats")
-    public MatchStats[] getStatsForMatches(@RequestParam String server, @RequestParam String username) {
+    public ResponseEntity<MatchStats[]> getStatsForMatches(@RequestParam String server, @RequestParam String username) {
         log.info("Requesting statistics for account with username '" + username + "' on '" + server + "' server");
-        String userId = riotService.getAcccountId(server, username);
-        MatchesBean matches = riotService.getMatchHistory(server, userId, 5);
+        String userId = getAccountIdIfExists(server, username);
+        if(userId.equals("")) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+        }
+        MatchesBean matches = riotService.getMatchHistory(server, userId, 3);
         MatchStats[] matchStats = new MatchStats[matches.getMatches().length];
         int i = 0;
         for (MatchBean match : matches.getMatches()) {
@@ -70,6 +67,19 @@ public class RiotController {
             }
             matchStats[i++] = new MatchStats(username, userTeam, hasUserWon, statsBeans);
         }
-        return matchStats;
+        return ResponseEntity.ok(matchStats);
+    }
+
+    private String getAccountIdIfExists(String server, String username) {
+        try {
+            log.info("Checking whether account with username '" + username + "' exist on '" + server + "' server");
+            String id = riotService.getAcccountId(server, username);
+            log.info("Account with username '" + username + "' exists on '" + server + "' server");
+            return id;
+        } catch (HttpClientErrorException ex) {
+            log.warn("Account with username '" + username + "' does not exist on '" + server + "' server");
+
+            return "";
+        }
     }
 }

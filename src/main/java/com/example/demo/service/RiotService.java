@@ -22,6 +22,8 @@ public class RiotService implements IRiotService {
     @Autowired
     private RestTemplate restTemplate;
 
+    static int counter = 0;
+
     private final long MILISECONDS_IN_WEEK = 604800000;
     private final long MILISECONDS_IN_THREE_MINUTES = 180000;
 
@@ -31,6 +33,7 @@ public class RiotService implements IRiotService {
             .queryParam("api_key", key)
             .build().toUri();
         log.info("Getting account id for username '" + username + "' on server " + server);
+        log.info("" + ++counter);
         UserBean result = restTemplate.getForObject(uriAccount, UserBean.class);
         return result.getAccountId();
     }
@@ -63,6 +66,7 @@ public class RiotService implements IRiotService {
                 + (beginTime >= 0 ? " from week before " + timestamp : "")
         );
         try {
+            log.info("" + ++counter);
             return restTemplate.getForObject(uriHistory, MatchesBean.class);
         } catch (HttpClientErrorException ex) {
             log.warn("No matches in week before " + timestamp + ". Returning empty list.");
@@ -76,7 +80,7 @@ public class RiotService implements IRiotService {
             .build().toUri();
 
         log.info("Getting match detail for match with id '" + id + "' on server " + server);
-
+        log.info("" + ++counter);
         return restTemplate.getForObject(uriHistory, MatchDetailBean.class);
     }
 

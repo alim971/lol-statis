@@ -38,7 +38,7 @@ class RiotServiceTest {
         String username = "bar";
         String server = "server";
 
-        when(riotService.getMatchHistory(server, idToReturn, 1, 0L)).thenReturn(matchesBean);
+        when(riotService.getMatchHistory(server, idToReturn, 5, 0L)).thenReturn(matchesBean);
 
         MatchBean[] matches = new MatchBean[1];
         matches[0] = mock(MatchBean.class);

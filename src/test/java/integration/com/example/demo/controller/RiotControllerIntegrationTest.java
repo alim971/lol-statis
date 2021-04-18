@@ -89,10 +89,13 @@ class RiotControllerIntegrationTest {
             .log()
             .all()
             .statusCode(HttpStatus.OK.value());
+
+        riotWiremockServer.verify();
+
     }
 
     @Test
-    void whenUserDoesNotExistsReturnsBadRequest() throws IOException {
+    void whenUserDoesNotExistsReturnsUnprocessableEntity() throws IOException {
 //        riotWiremockServer = MockRestServiceServer.createServer(restTemplate);
 
 
@@ -116,7 +119,10 @@ class RiotControllerIntegrationTest {
             .then()
             .log()
             .all()
-            .statusCode(HttpStatus.BAD_REQUEST.value());
+            .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+
+        riotWiremockServer.verify();
+
     }
 
 
@@ -124,13 +130,16 @@ class RiotControllerIntegrationTest {
     void itShouldReturnMatchStats() throws IOException, ParseException {
         String responseId = getResourceFileContent("getAccountIdResponse.json");
         String accountId = "4QHfmu6i88dGW4y8e2g6W15OeXjSW4HRlUlzvUcnX_5MlqRuKez-2STE";
+
         int queue = 420, beginIndex = 0, endIndex = 5;
         long endTime = 1617547368623L;
         long beginTime = endTime - 604800000L;
         endTime -=  180000;
+
         String gameId = "2791181323";
         String matchHistory = getResourceFileContent("getMatchHistoryResponse.json");
         String gameDetail = getResourceFileContent("getGameDetailResponse.json");
+
         List<String> participantsIds = List.of(
             "A7mZHh22sAOAvHzRi74iWV-r7Kou9TSX-6r2Ryj03zaS9ZU", "AYAppVilWC2-TtjcE-rQft8pz8TXGpB7yfappFw1-ADVnBg",
             "l51Pg0EyiHhKHMYvaQC8MhlGZgak0Bhg7Xj5QnhlP5pq2edvzhsoL2Bm", "fuhJ5M-2M9LFpcpsA_oSkgwiCFtWOESYhm2szrojOHTJuA",
@@ -149,10 +158,12 @@ class RiotControllerIntegrationTest {
 
         List<String> gameDetails = new ArrayList<>();
         List<String> gameHistories = new ArrayList<>();
+
         for (int i = 0; i < 10; i++) {
             gameDetails.add(getResourceFileContent("getGameDetail" + i + "Response.json"));
             gameHistories.add(getResourceFileContent("getStatsMatchHistory" + i + "Response.json"));
         }
+
         riotWiremockServer.expect(
             once(), requestTo("https://" + server + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + username + "?api_key=" + key))
             .andRespond(withSuccess(responseId, MediaType.APPLICATION_JSON));
@@ -164,6 +175,7 @@ class RiotControllerIntegrationTest {
         riotWiremockServer.expect(
             once(), requestTo("https://" + server + ".api.riotgames.com/lol/match/v4/matches/" + gameId + "?api_key=" + key))
             .andRespond(withSuccess(gameDetail, MediaType.APPLICATION_JSON));
+
         int i = 0;
         for (String participantId : participantsIds) {
             riotWiremockServer.expect(
@@ -193,7 +205,37 @@ class RiotControllerIntegrationTest {
 
         JSONParser parser = new JSONParser();
         JSONArray correctResponse = (JSONArray)parser.parse(getResourceFileContent("getCorrectResponse.json"));
-        riotWiremockServer.verify();
+
         assertEquals(correctResponse.hashCode(), response.hashCode());
+
+        riotWiremockServer.verify();
+
+    }
+
+    @Test
+    void itShouldReturnUnprocessableEntity() throws IOException {
+        String responseId = getResourceFileContent("getAccountIdNotFoundResponse.json");
+
+        riotWiremockServer.expect(
+            once(), requestTo("https://" + server + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + username + "?api_key=" + key))
+            .andRespond(withStatus(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(responseId)
+            );
+
+       given()
+            .port(port)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/stats?server=" + server + "&username=" + username)
+            // verify
+            .then()
+            .log()
+            .all()
+            .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+
+        riotWiremockServer.verify();
+
     }
 }
